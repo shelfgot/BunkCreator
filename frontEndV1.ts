@@ -27,8 +27,9 @@ class CSVUploader {
 
 class BunkMakerGUI {
     eidot: bC.Eidah[]=[];
+    campers: bC.Camper[]
     constructor(names: string[], reqs: any[]) {
-        let campers: bC.Camper[] = names.map((self) => {
+        campers = names.map((self) => {
             return new bC.Camper(self);
         });
         for (const [ind, reqgroup] of reqs.entries()) {
@@ -37,12 +38,14 @@ class BunkMakerGUI {
                 kanik.addPreferences(campers[ele[0]], ele[1]);
             });
         }
+    }
+    makeEidot() {
         let eidahMaker: bC.EidahSimulator = new bC.EidahSimulator(campers);
         this.eidot = eidahMaker.makeBunks();
     }
-    displayEidot(eidot: Array<bC.Eidah>) {
+    displayEidot() {
         let resultsPane = document.querySelector("#results");
-        for (const eidah of eidot) {
+        for (const eidah of this.eidot) {
             let bunkHTMLStrings: Array<string> = [];
             for (const bunk of eidah.bunks) {
                 let tempStr: string = "";
@@ -97,33 +100,49 @@ function handleNamingConflicts(arr: string[]){
     return arr;
   }
 
-let names: string[] = [];
-let nameAndIDDict: Object = {};
+
 
 $(document).ready(()=>{
+    
     $("#input_file").change(()=>{
+        let names: string[] = [];
         //@ts-ignore
         let file = this.prop('files')[0];
         let uploader = new CSVUploader();
         uploader.handleFile(file);
         names = handleNamingConflicts(uploader.text.split(",")); //in case there are two Moshe Papi--s, for example 
+        let options = "";
         for (let n=0; n<names.length; n++) {
-            nameAndIDDict[names[n]] = n;
             $('#camper-tbody').append(`
                 <tr>
                     <th class="name">
                         ${names[n]}
                     </th>
-                    <td>
-                        <input type="text" class="must"/>
-                        <input type="text" class="wants"/>
-                        <input type="text" class="prefersNot"/>
-                        <input type="text" class="cannot"/>
+                    <td class="requests">
+                        <select multiple data-placeholder="" style="width:350px;" data-name="${names[n]}" class="chosen-select must" tabindex="5"></select>
+                        <select multiple data-placeholder="" style="width:350px;" data-name="${names[n]}" class="chosen-select wants" tabindex="5"></select>
+                        <select multiple data-placeholder="" style="width:350px;" data-name="${names[n]}" class="chosen-select prefersNot" tabindex="5"></select>
+                        <select multiple data-placeholder="" style="width:350px;" data-name="${names[n]}" class="chosen-select cannot" tabindex="5"></select>
                     </td>
                 </tr>`);
+            options += `<option value="${n}">${names[n]}</option>`;
         }
-        $('.must, .wants, .prefersNot, .cannot').tagit({
-            availableTags: names    
+        
+        $('.must, .wants, .prefersNot, .cannot').each(()=>{
+            $(this).html(options);
+            $(this).chosen();
+        });
+
+        $('#generate').click(()=>{
+            let kanikim = [];
+            let reqs: any = [];
+            $('.requests').each(()=>{
+                //TODO - grab all of the values and process them to then send them off to the generator function
+            });
+            
+            let eidahCreator = new BunkMakerGUI(kanikim, reqs);
+            eidahCreator.makeEidot();
+            eidahCreator.displayEidot();
         });
     });
     /*
