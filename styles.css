@@ -14,3 +14,6 @@ rect, circle {
 .suggestion {
    padding: 1em;
 }
+#reqs-and-weights {
+   display: none;
+}

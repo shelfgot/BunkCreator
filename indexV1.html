@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Bunk Division</title>
+  <style type="stylesheet/css" src="./styles.css"></style>
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js" integrity="sha256-lSjKY0/srUM9BE3dPm+c4fBo1dky2v27Gdjm2uoZaL0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tag-it/2.0/js/tag-it.min.js" integrity="sha512-/+S+ux3SPgnYy6QTupGfK3nvRnXTYDRHtXMiaGsZaBHBa7sMWWHXdktMhfRlcx1ELUCLINAyWqiaC6a7EaIRtA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tag-it/2.0/css/jquery.tagit.css" integrity="sha512-AnT6wBVAnNBZ5ziYQxj+qbWaqUgrX12U8TE4p805hOHrdxm9t9ujv1dTXk1fmVDsectw75iK5Cdfo4UgWMYHpQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style type="stylesheet/css" src="https://code.jquery.com/ui/1.13.2/themes/cupertino/jquery-ui.css"></style>
+  
+</head>
+
+<body>
+  <header><img src="https://cdn.iconscout.com/icon/free/png-256/free-b-button-blood-type-37845.png">unk Creator v1</header>
+  <div id="file-upload">
+    <div class="input-group mb-3">
+        <input type="file" class="form-control" id="input_file"/>
+        <label class="input-group-text" for="input_file">Upload a CSV file with the campers' names (and nothing else!)</label>
+    </div>
+  </div>
+
+  <div id="reqs-and-weights">
+    <div id="camper-table">
+        <table id="camper-table-inner">
+            <thead id="camper-thead">
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Must be with...</th>
+                    <th scope="col">Wants to be with...</th>
+                    <th scope="col">Prefers not to be with...</th>
+                    <th scope="col">Should not be with...</th>
+                </tr>
+            </thead>
+            <tbody id="camper-tbody">
+            </tbody>
+        </table>
+    </div>
+    <nav id="right">
+        <div id="sliders">
+            <div class="A-wrapper">
+              <div id="A"></div>
+            </div> 
+            <div class="B-wrapper">
+              <div id="B"></div>
+            </div> 
+            <div class="D-wrapper">
+              <div id="D"></div>
+            </div> 
+            <div class="F-wrapper">
+              <div id="F"></div>
+            </div>  
+        </div>
+        <input type="submit" id="generate" value="Generate Bunks Suggestions" />
+    </nav>
+  </div> 
+  
+  <div id="results"></div>
+
+<script type="application/javascript" src="/frontEndV1.js">
+</script>
+<script type="application/javascript" src="/bunkCreator.js">
+</script>
+
+
+</body>
+
+</html>

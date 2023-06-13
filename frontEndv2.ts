@@ -33,7 +33,9 @@ class BunkMakerGUI {
     buttons;
     draw;
     clickedNames;
-    circleSize;
+    chanichCirclesUUIDObject: Map<bC.Camper, Object>;
+    circleSize: number;
+    focusCircle;
     init() {
         this.draw = SVG().addTo('#left').size(wX, wY);
         let buttonInfo: object = {"Must": 'rgb(40, 255, 102)', "Wants": 'rgb(187, 255, 100)', "Doesn't want": 'rgb(255, 238, 161)', "Cannot": 'rgb(255, 55, 10)'}
@@ -43,12 +45,43 @@ class BunkMakerGUI {
             let yPos = wY/10 + index*(wY*1.5);
             let xPos = wX-(wX/5);
             this.buttons[title] = this.draw.rect(wX/10, wY/10).move(xPos, yPos).fill(color);
-            let text = this.draw.text(title).move(xPos, yPos+wY/3).font({family: "Helvetica", size: wY/5});
-
+            let text = this.draw.text(title).move(xPos, yPos+wY/3).font({family: "Helvetica", size: wY/5})
             index += 1;
         }
         //set up the initial highlighting of the focused button
         this.focusButton("Must");
+        //set up the chanich circles
+        this.chanichCirclesUUIDObject = new Map<bC.Camper, Object>();
+        let bigCircleCenter = {"x": wX/2, "y": wY/2};
+        let radius = wX/2 - wX/10;
+        this.circleSize = wY/30;
+        campers.forEach((camper, index) => {
+            let insert = index * 2 * Math.PI / campers.length;
+            let x = bigCircleCenter["x"] + radius*Math.cos(insert);
+            let y = bigCircleCenter["y"] + radius*Math.sin(insert);
+            let tempCircle = this.draw.circle(circleSize).move(x, y).fill("rgb(255, 255, 100)");
+            let tempText = this.draw.text(camper.name).font({family: "Helvetica", size: 6}).move(x-15, y);
+            let svgElements = {"circle": tempCircle, "text": tempText};
+            tempCircle.click(this.handleCircleClick(camper, svgElements));
+            tempText.click(this.handleCircleClick(camper, svgElements));
+            this.chanichCirclesUUIDObject.set(camper, svgElements)
+        });
+        //set up keypress listener
+        let mapIterator = this.chanichCirclesUUIDObject.keys();
+        document.addEventListener("keydown", (event)=>{
+            const keyName = event.key;
+            if (keyName === "ArrowLeft") {
+                let r = mapIterator.next();
+                if (r.done) {
+                    mapIterator = this.chanichCirclesUUIDObject.keys();
+                     //i.e. restart the count
+                    r = mapIterator.next();
+                }
+                this.removeChanichFocus();
+                this.putChanichInFocus(r);
+
+            }
+        });
         //set up the generate bunks button
         let generateBunksButton = document.createElement("button");
         generateBunksButton.value = "All done? Generate Bunks!";
@@ -64,11 +97,12 @@ class BunkMakerGUI {
         this.focusState = buttonName;
     }
     removeChanichFocus() {
-
+        this.focusCircle.remove();
     }
     putChanichInFocus(chanichCircle) {
-        let focusCircle = this.draw.
-         chanichCircle.svg.x()
+        this.focusCircle = this.draw.circle(this.circleSize+10).fill("rgb(0,0,255)");
+        let x = chanichCircle.svg.x(), y = chanichCircle.svg.y();
+        this.focusCircle.move(x,y);
     }
     getProvisionalEidot(): Array<bC.Eidah> {
         let eidahSimulator: bC.EidahSimulator = new bC.EidahSimulator(campers);

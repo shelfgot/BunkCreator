@@ -239,24 +239,33 @@ class EidahSimulator {
   };
 }
 
-function fetchEidot(howMany:number, campers: Camper[]): Eidah[] {
-
-  let eidahMaker: EidahSimulator = new EidahSimulator(campers);
-  let possibilities: Eidah[] = eidahMaker.makeBunks();
-  let topEidot: Eidah[]=[];
-  let topBunks: Bunk[]=[];
-  let index=0, topN=0;
-  while (topN<howMany && possibilities[index]) {
-      let givenEidah = possibilities[index];
-      if(checkBunkEquality(givenEidah.bunks[0], topBunks)) {
-          index++;
-          continue;
-      }
-      topEidot.push(givenEidah);
-      topBunks.push(givenEidah.bunks[0]);
-      topBunks.push(givenEidah.bunks[1]);
-      index++;
-      topN++;
-  }
-  return topEidot;
-}
+(() => {
+    const A = 1, B = 0.5, D = -0.3, F = -1;
+    let names: string[] = ["Beit Shammai", "Beit Hillel", "Rabbi Elazar", "Rabbi Yehoshua", "Rashbag", "Rabbi Akiva", "Rabbi Chalafta", "Rabbi Yosei", "Bar Kappara", "Shimon Shezuri"];
+    let campers: Camper[] = names.map((self) => {
+        return new Camper(self);
+    });
+    let reqs = [[[2, F], [3, A], [5, B]], [[4,A],[6,A],[10,A],[9,A]],[[4,B],[9,D],[10,F]],[[2,A],[6,B],[7,B],[8,A]],[[1,B],[2,B],[3,B],[6,F],[7,A]],[[2,D],[4,A]]];
+    for (const [ind, reqgroup] of reqs.entries()) {
+        reqgroup.forEach((ele) => {
+            let kanik = campers[ind];
+            kanik.addPreferences(campers[ele[0]-1], ele[1]);
+        });
+    }
+    let eidahMaker: EidahSimulator = new EidahSimulator(campers);
+    let possibilities: Eidah[] = eidahMaker.makeBunks();
+    let index=0, printed=0;
+    let printedBunks: Bunk[] = [];
+    while (printed<10 && possibilities[index]) {
+        let givenEidah = possibilities[index];
+        if(checkBunkEquality(givenEidah.bunks[0], printedBunks)) {
+            index++;
+            continue;
+        }
+        console.log("SCORE: "+givenEidah.score()+". BUNK ALEF: "+givenEidah.bunks[0].bunkList + ";;;;;BUNK BET: " + givenEidah.bunks[1].bunkList);
+        printedBunks.push(givenEidah.bunks[0]);
+        printedBunks.push(givenEidah.bunks[1]);
+        index++;
+        printed++;
+    }
+})();
