@@ -136,8 +136,34 @@ $(document).ready(()=>{
         $('#generate').click(()=>{
             let kanikim = [];
             let reqs: any = [];
+            const MUST:number = $('#A').slider("option", "value");
+            const WANTS:number = $('#B').slider("option", "value");
+            const PREFER_NOT:number = $('#D').slider("option", "value");
+            const CANNOT:number = $('#F').slider("option", "value");
             $('.requests').each(()=>{
-                //TODO - grab all of the values and process them to then send them off to the generator function
+                let reqArray: any[] = [];
+                let reqBoxes = $(this).find("select");
+                const mustReqs = reqBoxes.eq(0).val();
+                mustReqs.forEach((value)=>{
+                    let req = [value, MUST];
+                    reqArray.push(req);
+                });
+                const wantsReqs = reqBoxes.eq(1).val();
+                wantsReqs.forEach((value)=>{
+                    let req = [value, WANTS];
+                    reqArray.push(req);
+                });
+                const preferNotReqs = reqBoxes.eq(2).val();
+                preferNotReqs.forEach((value)=>{
+                    let req = [value, PREFER_NOT];
+                    reqArray.push(req);
+                });
+                const cannotReqs = reqBoxes.eq(3).val();
+                cannotReqs.forEach((value)=>{
+                    let req = [value, CANNOT];
+                    reqArray.push(req);
+                });
+                reqs.push(reqArray);
             });
             
             let eidahCreator = new BunkMakerGUI(kanikim, reqs);
