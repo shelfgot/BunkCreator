@@ -1,7 +1,7 @@
 BunkCreator
 ===================
 
-BunkCreator v1 is up and running (with only one critical bug! See below.)
+BunkCreator v1 is up and running! שהחיינו.
 
 ## Installation
 There are two ways to run the BunkCreator - the former for simple testing, and the latter for development. 
