@@ -18,11 +18,11 @@
 
 <body>
   <header><img class="meme_img" src="https://cdn.iconscout.com/icon/free/png-256/free-b-button-blood-type-37845.png">unk Creator v1</header>
-  <span class="instructions">Instructions: Upload a CSV file with the campers' names (and nothing else!)</span>
   <div id="file-upload">
     <div class="input-group mb-3">
         <input type="file" class="file-input ui-button ui-widget ui-corner-all" id="input_file"/>
     </div>
+    <span class="instructions">Instructions: Upload a CSV file with the campers' names (and nothing else!)</span>
   </div>
 
   <div id="reqs-and-weights" style="display: none">
@@ -44,20 +44,20 @@
     <nav id="right">
         <div id="sliders">
             <div class="slider-wrapper">
-              <span>"Must" Weight</span>
-              <div id="A"></div>
+              <span class="weight-label">"Must" Weight</span>
+              <div id="A" class="slider"></div>
             </div> 
             <div class="slider-wrapper">
-              <span>"Wants" Weight</span>
-              <div id="B"></div>
+              <span class="weight-label">"Wants" Weight</span>
+              <div id="B" class="slider"></div>
             </div> 
             <div class="slider-wrapper">
-              <span>"Prefers Not" Weight</span>
-              <div id="D"></div>
+              <span class="weight-label">"Prefers Not" Weight</span>
+              <div id="D" class="slider"></div>
             </div> 
             <div class="slider-wrapper">
-              <span>"Cannot" Weight</span>
-              <div id="F"></div>
+              <span class="weight-label">"Cannot" Weight</span>
+              <div id="F" class="slider"></div>
             </div>  
         </div>
         <input type="submit" id="generate" value="Generate Bunks Suggestions" />

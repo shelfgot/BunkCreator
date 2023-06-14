@@ -3,7 +3,11 @@
    flex-wrap: wrap;
 }
 #right {
-   padding: 2em;
+   padding-left: 4em;
+}
+#file-upload {
+   display: flex;
+   padding-top: 1em;
 }
 .suggestion {
    padding: 1em;
@@ -20,6 +24,7 @@
 }
 #reqs-and-weights {
    display: none;
+   margin-top: 2em;
 }
 .slider-wrapper {
    display: flexbox;
@@ -32,7 +37,8 @@ header {
    text-align: center;
 }
 .instructions {
-   text-align: center;
+   padding-left: 2em;
+   font-size: 1.3em;
 }
 .file_input {
    background: #4400ff !important;
@@ -43,4 +49,15 @@ header {
 .name {
    text-align: left;
    font-weight: 100;
+}
+.weight-label {
+   margin-top: 0.2em;
+   margin-bottom: 0.4em;
+}
+.slider-wrapper {
+   padding-bottom: 1em;
+}
+#generate {
+   margin-top: 2.5em;
+   height: 3em !important;
 }

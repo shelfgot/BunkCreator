@@ -124,16 +124,16 @@ $(document).ready(()=>{
                             ${names[n]}
                         </th>
                         <td>
-                            <select multiple data-placeholder="Select campers..." data-name="${names[n]}" class="chosen-select must" tabindex="5"></select>
+                            <select multiple data-placeholder="Select campers..." data-name="${n}" class="chosen-select must" tabindex="5"></select>
                         </td>
                         <td>
-                            <select multiple data-placeholder="Select campers..." data-name="${names[n]}" class="chosen-select wants" tabindex="5"></select>
+                            <select multiple data-placeholder="Select campers..." data-name="${n}" class="chosen-select wants" tabindex="5"></select>
                         </td>
                         <td>
-                            <select multiple data-placeholder="Select campers..." data-name="${names[n]}" class="chosen-select prefersNot" tabindex="5"></select>
+                            <select multiple data-placeholder="Select campers..." data-name="${n}" class="chosen-select prefersNot" tabindex="5"></select>
                         </td>
                         <td>
-                            <select multiple data-placeholder="Select campers..." data-name="${names[n]}" class="chosen-select cannot" tabindex="5"></select>
+                            <select multiple data-placeholder="Select campers..." data-name="${n}" class="chosen-select cannot" tabindex="5"></select>
                         </td>
                     </tr>`);
                 options += `<option value="${n}">${names[n]}</option>`;
@@ -150,32 +150,30 @@ $(document).ready(()=>{
                 const WANTS:number = $('#B').slider("option", "value");
                 const PREFER_NOT:number = $('#D').slider("option", "value");
                 const CANNOT:number = $('#F').slider("option", "value");
+                let pushHelper = (arr, ele, ownNumber, VAL) => {
+                    if(ele.length > 0 && (Number(ele) !== Number(ownNumber))) {
+                        arr.push([Number(ele), VAL]);
+                    }
+                }; 
                 $('.requests').each((index, element)=>{
                     let reqArray: any[] = [];
                     let reqBoxes = $(element).find("select");
                     const mustChanich = reqBoxes.eq(0).val();
+                    const thisChanichNumber: number = reqBoxes.eq(0).attr("data-");
                     mustChanich.forEach((ele)=>{
-                        if(ele.length > 0) {
-                            reqArray.push([Number(ele), MUST]);
-                        }
+                        pushHelper(reqArray, ele, thisChanichNumber, MUST);
                     });
                     const wantsChanich = reqBoxes.eq(1).val();
                     wantsChanich.forEach((ele)=>{
-                        if(ele.length > 0) {
-                            reqArray.push([Number(ele), WANTS]);
-                        }
+                        pushHelper(reqArray, ele, thisChanichNumber, WANTS);
                     });
                     const preferNotChanich = reqBoxes.eq(2).val();
                     preferNotChanich.forEach((ele)=>{
-                        if(ele.length > 0) {
-                            reqArray.push([Number(ele), PREFER_NOT]);
-                        }
+                        pushHelper(reqArray, ele, thisChanichNumber, PREFER_NOT);
                     });
                     const cannotChanich = reqBoxes.eq(3).val();
                     cannotChanich.forEach((ele)=>{
-                        if(ele.length > 0) {
-                            reqArray.push([Number(ele), CANNOT]);
-                        }
+                        pushHelper(reqArray, ele, thisChanichNumber, CANNOT);
                     });
                     if (reqArray.length > 0) {
                         reqs.push(reqArray);
@@ -196,12 +194,11 @@ $(document).ready(()=>{
       max: 10,
       value: 10,
       create: (event, ui) => {
-        $('.A-wrapper').find('.ui-slider-handle').append("<span class='value'></span>");
-        $('.A-wrapper').find('.value').html('10');
-        
+        $('#A').find('.ui-slider-handle').append("<span class='value'></span>");
+        $('#A').find('.value').html('10');
       },
       slide: (event, ui) => {
-          $('.A-wrapper').find('.value').html(ui.value);
+          $('#A').find('.value').html(ui.value);
       }
     });
     $("#B").slider({
@@ -210,12 +207,12 @@ $(document).ready(()=>{
       max: 10,
       value: 4,
       create: (event, ui) => {
-        $('.B-wrapper').find('.ui-slider-handle').append("<span class='value'></span>");
-        $('.B-wrapper').find('.value').html('4');
+        $('#B').find('.ui-slider-handle').append("<span class='value'></span>");
+        $('#B').find('.value').html('4');
         
       },
       slide: (event, ui) => {
-          $('.B-wrapper').find('.value').html(ui.value);
+          $('#B').find('.value').html(ui.value);
       }
     });
     $("#D").slider({
@@ -224,12 +221,12 @@ $(document).ready(()=>{
       max: 0,
       value: -3,
       create: (event, ui) => {
-        $('.D-wrapper').find('.ui-slider-handle').append("<span class='value'></span>");
-        $('.D-wrapper').find('.value').html('-3');
+        $('#D').find('.ui-slider-handle').append("<span class='value'></span>");
+        $('#D').find('.value').html('-3');
         
       },
       slide: (event, ui) => {
-          $('.D-wrapper').find('.value').html(ui.value);
+          $('#D').find('.value').html(ui.value);
       }
     });
     $("#F").slider({
@@ -238,12 +235,12 @@ $(document).ready(()=>{
       max: 0,
       value: -10,
       create: (event, ui) => {
-        $('.F-wrapper').find('.ui-slider-handle').append("<span class='value'></span>");
-        $('.F-wrapper').find('.value').html('-10');
+        $('#F').find('.ui-slider-handle').append("<span class='value'></span>");
+        $('#F').find('.value').html('-10');
         
       },
       slide: (event, ui) => {
-          $('.F-wrapper').find('.value').html(ui.value);
+          $('#F').find('.value').html(ui.value);
       }
     });
   });
