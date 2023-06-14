@@ -42,21 +42,18 @@ class Camper {
     }
 }
 
-type UUID = `${string}-${string}-${string}-${string}-${string}`;
+type UUID = string;
 
 interface UUIDObject extends Object {
   [x: string]: any;
-  [key: UUID]: Camper;
 }
 
 interface UUIDReqObject extends Object {
   [x: string]: any;
-  [key: UUID]: PreferenceObject;
 }
 
 interface PreferenceObject extends Object {
   [x: string]: any;
-  [key: UUID]: number;
 }
 
 function checkBunkEquality(bunkA: Bunk, bunks: Bunk[]): boolean {
@@ -183,14 +180,20 @@ class EidahSimulator {
       let bunks = bunksAndLooseEnds["bunks"];
       if(bunksAndLooseEnds["looseChanichim"]) {
         for (const [id, chanich] of Object.entries(bunksAndLooseEnds["looseChanichim"])) {
-            for(let i=0; i<2; i++) {
-              if(chanich.checkCompatibility(bunks[i]) > chanich.checkCompatibility(bunks[1 - i])) {
-                if (bunks[i].kids.length * 2 >= this.eidahSize) {
-                  bunks[1 - i].addCampers([chanich], bunks[i]);
-                }
+              /*let criterion: boolean = Boolean((bunks[0].bunkList.length * 2) >= this.eidahSize || (bunks[1].bunkList.length * 2) >= this.eidahSize); 
+              let bunkToPlaceIn: Bunk;
+              let otherBunk: Bunk;
+              if(criterion) {
+                bunks.sort((a,b) => a.bunkList.length - b.bunkList.length);
+                bunkToPlaceIn = bunks[0];
+                otherBunk = bunks[1];
+              } else {
+                let bunkNum = Math.round(Math.random());
+                bunkToPlaceIn = bunks[bunkNum];
+                otherBunk = bunks[1-bunkNum];
               }
-            }    
-          }
+              bunkToPlaceIn.addCampers([chanich], otherBunk); */  
+        }
       }
       let provisionalEidah: Eidah = new Eidah(n, bunks); 
       possibleEidot.push(provisionalEidah);
@@ -239,24 +242,34 @@ class EidahSimulator {
   };
 }
 
-function fetchEidot(howMany:number, campers: Camper[]): Eidah[] {
-
-  let eidahMaker: EidahSimulator = new EidahSimulator(campers);
-  let possibilities: Eidah[] = eidahMaker.makeBunks();
-  let topEidot: Eidah[]=[];
-  let topBunks: Bunk[]=[];
-  let index=0, topN=0;
-  while (topN<howMany && possibilities[index]) {
-      let givenEidah = possibilities[index];
-      if(checkBunkEquality(givenEidah.bunks[0], topBunks)) {
-          index++;
-          continue;
-      }
-      topEidot.push(givenEidah);
-      topBunks.push(givenEidah.bunks[0]);
-      topBunks.push(givenEidah.bunks[1]);
-      index++;
-      topN++;
-  }
-  return topEidot;
-}
+(() => {
+    const A = 1, B = 0.5, D = -0.3, F = -1;
+    let names: string[] = ["Beit Shammai", "Beit Hillel", "Rabbi Elazar", "Rabbi Yehoshua", "Rashbag", "Rabbi Akiva", "Rabbi Chalafta", "Rabbi Yosei", "Bar Kappara", "Shimon Shezuri"];
+    let campers: Camper[] = names.map((self) => {
+        return new Camper(self);
+    });
+    let reqs = [[[2, F], [3, A]]];
+    for (const [ind, reqgroup] of reqs.entries()) {
+        reqgroup.forEach((ele) => {
+            let kanik = campers[ind];
+            kanik.addPreferences(campers[ele[0]-1], ele[1]);
+        });
+    }
+    let eidahMaker: EidahSimulator = new EidahSimulator(campers);
+    let possibilities: Eidah[] = eidahMaker.makeBunks();
+    let index=0, printed=0;
+    let printedBunks: Bunk[] = [];
+    while (printed<10 && possibilities[index]) {
+        let givenEidah = possibilities[index];
+        let alefLength = givenEidah.bunks[0].bunkList.length, betLength = givenEidah.bunks[1].bunkList.length;
+        if(checkBunkEquality(givenEidah.bunks[0], printedBunks)  || (alefLength * LOPSIDEDNESS < betLength || betLength * LOPSIDEDNESS < alefLength)) {
+            index++;
+            continue;
+        }
+        console.log("SCORE: "+givenEidah.score()+". BUNK ALEF: "+givenEidah.bunks[0].bunkList + ";;;;;BUNK BET: " + givenEidah.bunks[1].bunkList);
+        printedBunks.push(givenEidah.bunks[0]);
+        printedBunks.push(givenEidah.bunks[1]);
+        index++;
+        printed++;
+    }
+})();

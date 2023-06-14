@@ -1,0 +1,46 @@
+#wrapper, #results {
+   display: flex;
+   flex-wrap: wrap;
+}
+#right {
+   padding: 2em;
+}
+.suggestion {
+   padding: 1em;
+}
+.score {
+   padding: 0.3em;
+   font-size: 1.5em;
+   text-align: center;
+   color: #dd2e44;
+}
+.results-table {
+   border-style: solid;
+   border-width: 3px;
+}
+#reqs-and-weights {
+   display: none;
+}
+.slider-wrapper {
+   display: flexbox;
+}
+* {
+   font-family: "Roboto";
+}
+header {
+   font-size: 2em;
+   text-align: center;
+}
+.instructions {
+   text-align: center;
+}
+.file_input {
+   background: #4400ff !important;
+}
+.meme_img {
+   height: 0.8em;
+}
+.name {
+   text-align: left;
+   font-weight: 100;
+}

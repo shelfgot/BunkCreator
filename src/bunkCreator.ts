@@ -1,7 +1,8 @@
-export { Camper, UUID, UUIDObject, Bunk, Eidah, Req, EidahSimulator}
-const SIMULATIONS_PER_BUNK = 5000;
+export { Camper, UUIDObject, Bunk, Eidah, Req, EidahSimulator}
+const SIMULATIONS_PER_BUNK = 10000;
 const SENSITIVITY = 1;
-const LOPSIDEDNESS = 25/20;
+const LOPSIDEDNESS = 1.25;
+const HOW_MANY = 15;
 
 class Camper {
     readonly name: string;
@@ -42,21 +43,21 @@ class Camper {
     }
 }
 
-type UUID = `${string}-${string}-${string}-${string}-${string}`;
+//type UUID = `${string}-${string}-${string}-${string}-${string}`;
 
 interface UUIDObject extends Object {
   [x: string]: any;
-  [key: UUID]: Camper;
+  //[key: UUID]: Camper;
 }
 
 interface UUIDReqObject extends Object {
   [x: string]: any;
-  [key: UUID]: PreferenceObject;
+  //[key: UUID]: PreferenceObject;
 }
 
 interface PreferenceObject extends Object {
   [x: string]: any;
-  [key: UUID]: number;
+  //[key: UUID]: number;
 }
 
 function checkBunkEquality(bunkA: Bunk, bunks: Bunk[]): boolean {
@@ -184,11 +185,22 @@ class EidahSimulator {
       if(bunksAndLooseEnds["looseChanichim"]) {
         for (const [id, chanich] of Object.entries(bunksAndLooseEnds["looseChanichim"])) {
             for(let i=0; i<2; i++) {
-              if(chanich.checkCompatibility(bunks[i]) > chanich.checkCompatibility(bunks[1 - i])) {
-                if (bunks[i].kids.length * 2 >= this.eidahSize) {
-                  bunks[1 - i].addCampers([chanich], bunks[i]);
-                }
+              /*let criterion: boolean = Boolean((bunks[i].bunkList.length * 2) >= this.eidahSize); 
+              let j: number = criterion ? 1-i : i;
+              bunks[j].addCampers([chanich], bunks[1-j]);*/
+              let criterion: boolean = Boolean((bunks[0].bunkList.length * 2) >= this.eidahSize || (bunks[1].bunkList.length * 2) >= this.eidahSize); 
+              let bunkToPlaceIn: Bunk;
+              let otherBunk: Bunk;
+              if(criterion) {
+                bunks.sort((a,b) => a.bunkList.length - b.bunkList.length);
+                bunkToPlaceIn = bunks[0];
+                otherBunk = bunks[1];
+              } else {
+                let bunkNum = Math.round(Math.random());
+                bunkToPlaceIn = bunks[bunkNum];
+                otherBunk = bunks[1-bunkNum];
               }
+              bunkToPlaceIn.addCampers([chanich], otherBunk);
             }    
           }
       }
@@ -234,38 +246,22 @@ class EidahSimulator {
       let alef_score = eidahAlef.score(), bet_score = eidahBet.score();
       return bet_score - alef_score;
     })
-
-    return possibleEidot;
-  };
-}
-
-(() => {
-    const A = 1, B = 0.5, D = -0.3, F = -1;
-    let names: string[] = ["Beit Shammai", "Beit Hillel", "Rabbi Elazar", "Rabbi Yehoshua", "Rashbag", "Rabbi Akiva", "Rabbi Chalafta", "Rabbi Yosei", "Bar Kappara", "Shimon Shezuri"];
-    let campers: Camper[] = names.map((self) => {
-        return new Camper(self);
-    });
-    let reqs = [[[2, F], [3, A], [5, B]], [[4,A],[6,A],[10,A],[9,A]],[[4,B],[9,D],[10,F]],[[2,A],[6,B],[7,B],[8,A]],[[1,B],[2,B],[3,B],[6,F],[7,A]],[[2,D],[4,A]]];
-    for (const [ind, reqgroup] of reqs.entries()) {
-        reqgroup.forEach((ele) => {
-            let kanik = campers[ind];
-            kanik.addPreferences(campers[ele[0]-1], ele[1]);
-        });
-    }
-    let eidahMaker: EidahSimulator = new EidahSimulator(campers);
-    let possibilities: Eidah[] = eidahMaker.makeBunks();
-    let index=0, printed=0;
-    let printedBunks: Bunk[] = [];
-    while (printed<10 && possibilities[index]) {
-        let givenEidah = possibilities[index];
-        if(checkBunkEquality(givenEidah.bunks[0], printedBunks)) {
+    let topEidot: Eidah[]=[];
+    let topBunks: Bunk[]=[];
+    let index=0, topN=0;
+    while (topN<HOW_MANY && possibleEidot[index]) {
+        let givenEidah = possibleEidot[index];
+        let alefLength = givenEidah.bunks[0].bunkList.length, betLength = givenEidah.bunks[1].bunkList.length;
+        if(checkBunkEquality(givenEidah.bunks[0], topBunks) || (alefLength * LOPSIDEDNESS < betLength || betLength * LOPSIDEDNESS < alefLength)) {
             index++;
             continue;
-        }
-        console.log("SCORE: "+givenEidah.score()+". BUNK ALEF: "+givenEidah.bunks[0].bunkList + ";;;;;BUNK BET: " + givenEidah.bunks[1].bunkList);
-        printedBunks.push(givenEidah.bunks[0]);
-        printedBunks.push(givenEidah.bunks[1]);
+        } 
+        topEidot.push(givenEidah);
+        topBunks.push(givenEidah.bunks[0]);
+        topBunks.push(givenEidah.bunks[1]);
         index++;
-        printed++;
+        topN++;
     }
-})();
+    return topEidot;
+  };
+}

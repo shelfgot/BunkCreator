@@ -1,3 +1,4 @@
+/*
 // @ts-ignore Import module
 import { SVG } from "https://cdn.jsdelivr.net/npm/@svgdotjs/svg.js@3.0/dist/svg.min.js"
 // @ts-ignore Import module
@@ -149,3 +150,4 @@ class BunkMakerGUI {
         }
     }
 }
+*/
